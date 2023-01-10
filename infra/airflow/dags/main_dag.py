@@ -33,16 +33,16 @@ def fetch_data(ti, **kwargs):
     - kwargs:
     """
 
-    datetime_format = "%Y-%m-%d %H-%M-%S"
+    datetime_format = "%Y-%m-%d"
     date_tag = datetime.now().strftime(datetime_format)
-    test_tag = "2019-06-01-15-29-5"
+    test_tag = "2019-06-01"
 
     s3_hook = S3Hook(aws_conn_id=AWS_DEFAULT_CONN)
     s3_hook.get_conn()
 
     prefix = f"{DATA_FOLDER}{test_tag}"
     data_objects = s3_hook.list_keys(bucket_name=MAIN_SOURCE_BUCKET, prefix=prefix)
-
+    
     for data_object in data_objects:
         object_key = re.sub(DATA_FOLDER, '', data_object)
         if re.findall('.json', object_key):
