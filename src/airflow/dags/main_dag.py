@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.amazon.aws.operators.glue import GlueJobOperator
 from airflow.hooks.S3_hook import S3Hook
 from airflow.utils.dates import days_ago
 from airflow.models.baseoperator import chain
@@ -16,10 +17,6 @@ RAW_ZONE_FOLDER = "raw_zone/"
 STRUCTURE_ZONE_FOLDER = "structure_zone/"
 AWS_DEFAULT_CONN = "aws_default"
 
-default_args = {
-    'retry': 5,
-    'retry_delay': timedelta(minutes=5)
-}
 
 def fetch_data(ti, **kwargs):
     """
@@ -66,6 +63,10 @@ def fetch_data(ti, **kwargs):
             except botocore.exceptions.ParamValidationError as error:
                 raise ValueError('The parameters you provided are incorrect: {}'.format(error))
 
+default_args = {
+    'retry': 5,
+    'retry_delay': timedelta(minutes=5)
+}
 
 
 with DAG(dag_id='door2door_dag', default_args=default_args, schedule_interval="@daily", 
@@ -80,7 +81,16 @@ with DAG(dag_id='door2door_dag', default_args=default_args, schedule_interval="@
         task_id="process_data",
         python_callable=process_data
     )
-    
+    job_name = 'example_glue_job'
+    submit_glue_job = GlueJobOperator(
+        task_id='submit_glue_job',
+        job_name=job_name,
+        wait_for_completion=False,
+        script_location=f's3://{GLUE_EXAMPLE_S3_BUCKET}/etl_script.py',
+        iam_role_name=GLUE_CRAWLER_ROLE.split('/')[-1],
+        create_job_kwargs={'GlueVersion': '3.0', 'NumberOfWorkers': 2, 'WorkerType': 'G.1X'},
+    )
+
 
 
     chain(fetch_data)
