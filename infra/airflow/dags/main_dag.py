@@ -42,7 +42,7 @@ def fetch_data(ti, **kwargs):
 
     prefix = f"{DATA_FOLDER}{test_tag}"
     data_objects = s3_hook.list_keys(bucket_name=MAIN_SOURCE_BUCKET, prefix=prefix)
-    
+
     for data_object in data_objects:
         object_key = re.sub(DATA_FOLDER, '', data_object)
         if re.findall('.json', object_key):
@@ -75,14 +75,13 @@ with DAG(dag_id='door2door_dag', default_args=default_args, schedule_interval="@
         task_id="fetch_data",
         python_callable=fetch_data
     )
+
+    process_data = AWSGlueJobOperator(
+        task_id="process_data",
+        python_callable=process_data
+    )
     
-    # copy_object = S3CopyObjectOperator(
-    # task_id="send_data_to_rawzone",
-    # source_bucket_name="de-tech-assessment-2022",
-    # dest_bucket_name="de-tech-assessment-2022-gonzalo",
-    # source_bucket_key="data/",
-    # dest_bucket_key="raw_zone/data/"
-    # )
+
 
     chain(fetch_data)
 
