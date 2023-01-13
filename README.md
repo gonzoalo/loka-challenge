@@ -18,11 +18,15 @@ The data of the even s are located in the bucket s3://de-tech-assessment-2022/da
 
 ## Run the project
 
+First of all you have to set the env variables in `.env` file
+
 1. Create resources with terraform.
 
 ` 
 cd infra/terraform
+
 terrafrom plan 
+
 terraform apply
 `
 

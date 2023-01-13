@@ -7,6 +7,11 @@ from awsglue.context import GlueContext
 from awsglue.job import Job
 
 
+"""
+Here we need to do a data transformation and split the data in two tables 
+vehicles and operating period
+
+"""
 
 sc = SparkContext.getOrCreate()
 glueContext = GlueContext(sc)
@@ -18,11 +23,6 @@ raw_data = "s3://de-tech-assessment-2022-gonzalo/raw_zone/"
 df = spark.read.option("header", "true")\
     .option("inferSchema", "true").json(raw_data)
 
-"""
-Here we need to do a data transformation and split the data in two tables 
-vehicles and operating period
-
-"""
 
 
 df_operating_period = df.where(df.on == 'operating_period')
