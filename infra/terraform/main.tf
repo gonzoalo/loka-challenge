@@ -73,6 +73,7 @@ resource "aws_glue_connection" "aws_glue_conn" {
   name = "door2door_conn2"
   connection_type = "NETWORK"
   physical_connection_requirements {
+    availability_zone      = var.availability_zone
     security_group_id_list = [var.security_group_id]
     subnet_id              = var.subnet_id
   }
@@ -82,7 +83,7 @@ resource "aws_glue_connection" "aws_glue_conn" {
 # role for glue actions
 
 resource "aws_iam_role" "glue_role" {
-  name = "AWSGlueServiceRoleDefault"
+  name = "AWSGlueServiceRole-door2door2"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -118,8 +119,8 @@ resource "aws_iam_role_policy" "s3_policy" {
         "s3:*"
       ],
       "Resource": [
-        "arn:aws:s3:::my_bucket",
-        "arn:aws:s3:::my_bucket/*"
+        "arn:aws:s3:::de-tech-assessment-2022-gonzalo",
+        "arn:aws:s3:::de-tech-assessment-2022-gonzalo/*"
       ]
     }
   ]
@@ -127,8 +128,31 @@ resource "aws_iam_role_policy" "s3_policy" {
 EOF
 }
 
-# resource "aws_iam_role_policy" "glue_service_s3" {
-#  name = "glue_service_s3"
-#     role = "${aws_iam_role.glue_role.id}"
-#     policy = "${aws_iam_role_policy.s3_policy.policy}"
-# }
+resource "aws_iam_role_policy" "iam_policy" {
+  name = "iam_policy"
+  role = "${aws_iam_role.glue_role.id}"
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:iam::*:role/service-role/AWSGlueServiceRole*",
+                "arn:aws:iam::*:role/AWSGlueServiceRole*"
+            ],
+            "Condition": {
+                "StringLike": {
+                    "iam:PassedToService": [
+                        "glue.amazonaws.com"
+                    ]
+                }
+            }
+        }
+    ]
+}
+EOF
+}

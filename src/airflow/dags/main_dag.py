@@ -19,8 +19,8 @@ GLUE_JOBS_FOLDER = "glue_jobs"
 AWS_DEFAULT_CONN = "aws_default"
 
 GLUE_CRAWLER_NAME="door2door_{}_crawler"
-GLUE_ROLE="arn:aws:iam::057286332506:role/service-role/AWSGlueServiceRole-door2door"
-GLUE_DATABASE_NAME="door2doordb"
+GLUE_ROLE="arn:aws:iam::057286332506:role/AWSGlueServiceRole-door2door2"
+GLUE_DATABASE_NAME="door2doordb2"
 
 GLUE_CRAWLER_VEHICLE_CONFIG = {
     'Name': GLUE_CRAWLER_NAME.format("vehicle"),

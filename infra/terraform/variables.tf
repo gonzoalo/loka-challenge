@@ -9,3 +9,9 @@ variable "subnet_id" {
     type = string
     default="subnet-611d4a2b"
 }
+
+variable "availability_zone" {
+    description = "Availability zone name for the subnet for the glue connection"
+    type = string
+    default = "us-east-1a"
+}

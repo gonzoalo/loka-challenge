@@ -22,13 +22,13 @@ First of all you have to set the env variables in `.env` file
 
 1. Create resources with terraform.
 
-` 
+```
 cd infra/terraform
 
 terrafrom plan 
 
 terraform apply
-`
+```
 
 2. Run airflow on your local or virtual machine.
 
