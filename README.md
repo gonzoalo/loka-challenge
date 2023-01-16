@@ -4,12 +4,13 @@ the solution aims to process daily the data from the events in the car services
 
 We are going to build a module that will be executed every day and feeds the data warehouse
 
-## Strategy
+## Architecture
 
-- build infrastructure
-- docker with airflow
-- build dags
+We will be using the following architecture:
 
+![alt text](img/architecturefi.png)
+
+![alt text](img/dags.png)
 
 ## Data
 
@@ -36,6 +37,12 @@ terraform apply
 
 Open on `localhost:8080/home`
 
-3. Run your dags on the airflow web service.
+3. Set your aws credentials in airflow connections with the label `aws_default`. 
 
-4. Enter to Athena in AWS to see your data.
+4. Run your dags on the airflow web service.
+
+5. Enter to Athena in AWS to see your data.
+
+
+## Future work
+
