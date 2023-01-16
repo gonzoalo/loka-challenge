@@ -6,9 +6,11 @@ We are going to build a module that will be executed every day and feeds the dat
 
 ## Architecture
 
-We will be using the following architecture:
+For the infrastructure cloud architecture we are going to use a Raw and Strucutre zone. The first to copy the data from the original source and the second to store the data after the transformation job so we can still have a copy o the original data for any furutre use case. We are going to use Athena as a SQL-queriable data warehouse.
 
 ![alt text](img/architecture.png)
+
+For the daily job execution we are going to use airflow as orchestrator with the following sequence of tasks:
 
 ![alt text](img/dags.png)
 
