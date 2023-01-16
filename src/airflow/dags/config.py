@@ -89,8 +89,8 @@ GLUE_JOB_ARGS = {
 
 
 GLUE_CRAWLER_NAME = "door2door_{}_crawler"
-GLUE_ROLE = "AWSGlueServiceRole-door2door2"
-GLUE_DATABASE_NAME = "door2doordb2"
+GLUE_ROLE = "AWSGlueServiceRole-door2door"
+GLUE_DATABASE_NAME = "door2doordb"
 
 GLUE_CRAWLER_VEHICLE_CONFIG = {
     'Name': GLUE_CRAWLER_NAME.format("vehicle"),

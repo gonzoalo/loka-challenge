@@ -21,10 +21,10 @@ provider "aws" {
 # One folder for the glue jobs
 
 resource "aws_s3_bucket" "main_bucket" {
-  bucket = "de-tech-assessment-2022-gonzalo"
+  bucket = var.datalake_bukcet_name
 
   tags = {
-    Name        = "de-tech-assessment-2022-gonzalo"
+    Name        = var.datalake_bukcet_name
     Environment = "Dev"
   }
 }
@@ -63,27 +63,17 @@ resource "aws_s3_object" "process_data_job" {
 }
 
 # Glue resources
-# DB connection and db
+# Glue DB
 
 resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
-  name = "door2doordb2"
+  name = "door2doordb"
 }
-
-# resource "aws_glue_connection" "aws_glue_conn" {
-#   name = "door2door_conn2"
-#   connection_type = "NETWORK"
-#   physical_connection_requirements {
-#     availability_zone      = var.availability_zone
-#     security_group_id_list = [var.security_group_id]
-#     subnet_id              = var.subnet_id
-#   }
-# }
 
 # IAM resources
 # role for glue actions
 
 resource "aws_iam_role" "glue_role" {
-  name = "AWSGlueServiceRole-door2door2"
+  name = "AWSGlueServiceRole-door2door"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -119,8 +109,8 @@ resource "aws_iam_role_policy" "s3_policy" {
         "s3:*"
       ],
       "Resource": [
-        "arn:aws:s3:::de-tech-assessment-2022-gonzalo",
-        "arn:aws:s3:::de-tech-assessment-2022-gonzalo/*"
+        "arn:aws:s3:::${var.datalake_bukcet_name}",
+        "arn:aws:s3:::${var.datalake_bukcet_name}/*"
       ]
     }
   ]

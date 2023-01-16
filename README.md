@@ -18,7 +18,6 @@ These services will be launched and setted with terraform an Infrastructure-as-c
     - Structrure Folder
     - Glue jobs Folder (with glue jobs inside)
 - IAM Role for the glue jobs
-- Glue Connection
 - Glue Database
 
 For the daily job execution we are going to use airflow as orchestrator with the following sequence of tasks:
@@ -32,15 +31,13 @@ The data of the events are located in the bucket `s3://de-tech-assessment-2022/d
 
 ## Run the project
 
-First of all you have to set the env variables in `src/airflow/config.py` file
+First of all you have to set the configuration variables in `src/airflow/config.py` file
 
 1. Create resources with terraform.
 
 ```
 cd infra/terraform
-
 terrafrom plan 
-
 terraform apply
 ```
 
@@ -48,6 +45,7 @@ terraform apply
 
 ```
 cd src/airflow/
+echo -e "AIRFLOW_UID=$(id -u)" > .env
 docker-compose up 
 ```
 
@@ -66,3 +64,5 @@ Open your project [here](https://0.0.0.0:8080/home)
 
 - Depending on the size and quantity of the files in the source data bucket we can replace the `_fetch_data` module and make work through a cloud function like lambda and don't overcharge our worker node.
 - If the number of the entities(tables) increase, we can replace Amazon Athena and the glue jobs and use dbt and Redshift for the transformations in order to have a more detailed data warehouse.
+- For testing purposes, we are using a docker configuration given by airflow testing, in a real production environment is better to have a dedicated ariflow configuration with their respective needs hosted in the cloud or instead of that a managed service like MWAA. (more expensive option although)
+- In the case of adding more entities in the event table we just need to add the model in the config.py file and add the crawler configuration to send it to our Athena warehouse.
