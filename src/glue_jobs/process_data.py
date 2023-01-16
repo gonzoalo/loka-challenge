@@ -38,6 +38,23 @@ def cast_columns(df: DynamicFrame, cast_policies: dict) -> DynamicFrame:
     
     return df.select(final_columns)
 
+def null_treatment(df: DynamicFrame, null_policies: dict) -> DynamicFrame:
+    """
+    Treat the columns with null values given the null treatment policies givcen as an argument.
+    Args:
+        df (DataFrame): Dataframe of the table to be cleaned.
+        null_policies (dict): Dictionary of the policies to treat the null data columns in the table.
+    Returns:
+        df (DataFrame): Resulting dataframe after the null treatment transfromation
+    """
+    for column, policy in null_policies.items():
+        if policy["null_policy"] == "drop":
+            df = df.where(~f.isnull(df[column]))
+        elif policy["null_policy"] == 'replace':
+            df = df.withColumn(column, f.when(df[column] == '', f.lit(policy["replacement"])).otherwise(df[column]))
+    return df
+
+
 args = getResolvedOptions(
     sys.argv,
     [
@@ -67,12 +84,18 @@ for table in tables_to_transform:
     
     table_name = table["table_name"]
     cast_policies = table["cast_policies"]
+    null_policies = table["null_policies"]
     partition_parameter = table["partition_parameter"]
     current_df = df.where(df[table_column_identifier] == table_name)
 
     if cast_policies:
         current_df = cast_columns(current_df, cast_policies)
     
+    if null_policies:
+        current_df = null_treatment(current_df, null_policies)
+
+    # For this project and for the format of the data that is comming 
+    # We are going to use for partition a (day, minute) tuple
     current_df = current_df.withColumn("minute", f.minute(f.col(partition_parameter))).\
             withColumn("day", f.dayofmonth(f.col(partition_parameter)))
 

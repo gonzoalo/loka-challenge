@@ -1,14 +1,14 @@
 # Loka Challenge(door2door)
 
-The following projects aims to process data daily from events from a Car Service Company and stores them in a Data Warehouse For this purpose we are going to use AWS as our cloud provider so in order to run the project we need an aws account. 
+The following projects aims to process data daily events from a Car Service Company and stores them in a Data Warehouse. For this purpose we are going to use AWS as our cloud provider so in order to run the project we need an aws account. 
 
 ## Aproach
 
-For this project I want to have a robust pipeline for future possible scenarios like modifying tables columns or adding new table to the data warehouse, etc. That's why the whole project have a main config file where we can set this up according to the business needs.
+For this project I want to have a robust pipeline for future possible scenarios like modifying table columns or adding new table to the data warehouse, etc. That's why the whole project have a main config file where we can set this up according to the business needs.
 
 ## Architecture
 
-For the infrastructure cloud architecture we are going to use a Raw and Strucutre zone. The first to copy the data from the original source and the second to store the data after the transformation job so we can still have a copy o the original data for any furutre use case. We are going to use Athena as a SQL-queriable data warehouse.
+ We are going to use a Raw and Strucutre zone as staging zones. The first to copy the data from the original source and the second to store the data after the transformation job so we can still have a copy o the original data for any furutre use case. We are going to use Athena as a SQL-queriable data warehouse. So the architecture will be the following:
 
 ![alt text](img/architecture.png)
 
@@ -24,9 +24,23 @@ For the daily job execution we are going to use airflow as orchestrator with the
 
 ![alt text](img/dags.png)
 
+The details of the tasks are the following:
+- fetch_data: task for copy the data source to our first staging zone.
+- process_data_glue_job: task for the transformations and modeling for the glue jobs.
+- crawl_s3_operating_period: task for crawl the operating period data to our Athena warehouse.
+- crawl_s3_vehicle: task for crawl the vehicle data to our Athena warehouse.
+
 ## Data
 
 The data of the events are located in the bucket `s3://de-tech-assessment-2022/data/`
+
+Until now we have two entities: operating period and vechicle.
+
+For the operating period entitiy we have the variables operation_start and operation_finish which belongs to the date and time when the operating period for the renting cars starts and ends.
+
+And for the vehicle entity we have 3 different events: register, update and deregister, only when we recieve an update we will have data for location, in the other events we won't have location data. That's why we are going to keep that records with nodata in loaction columns. 
+
+We are only going to drop records when there's no data in event, timestamps or the identifction columns like on and organization_id. We also don't know how is going to come data in the future that's why we are setting everything up for any case of weird data in the records.
 
 
 ## Run the project

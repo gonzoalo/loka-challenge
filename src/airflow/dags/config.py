@@ -48,6 +48,36 @@ GLUE_JOB_ARGS = {
                     "data_type": "StringType"
                 }
             },
+            "null_policies": {
+                "at": {
+                    "null_policy": "drop"
+                },
+                "event": {
+                    "null_policy": "drop"
+                },
+                "data_id": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "location_at": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "location_lat": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "location_lng": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "on": {
+                    "null_policy": "drop"
+                },
+                "organization_id": {
+                    "null_policy": "drop"
+                }
+            },
             "partition_parameter": "at"
         },
         {
@@ -80,6 +110,32 @@ GLUE_JOB_ARGS = {
                 "organization_id": {
                     "formatted_name": "organization_id",
                     "data_type": "StringType"
+                }
+            },
+            "null_policies": {
+                "at": {
+                    "null_policy": "drop"
+                },
+                "event": {
+                    "null_policy": "drop"
+                },
+                "data_id": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "operation_start": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "operating_finish": {
+                    "null_policy": "replace",
+                    "replacement": " "
+                },
+                "on": {
+                    "null_policy": "drop"
+                },
+                "organization_id": {
+                    "null_policy": "drop"
                 }
             },
             "partition_parameter": "at"
