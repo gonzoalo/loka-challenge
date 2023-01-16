@@ -23,7 +23,7 @@ For the daily job execution we are going to use airflow as orchestrator with the
 
 ## Data
 
-The data of the even s are located in the bucket `s3://de-tech-assessment-2022/data/`
+The data of the events are located in the bucket `s3://de-tech-assessment-2022/data/`
 
 
 ## Run the project
@@ -44,13 +44,15 @@ terraform apply
 
 `docker-compose up `
 
-Open your project [here](0.0.0.0:8080/home)
+Open your project [here](https://0.0.0.0:8080/home)
 
 3. Set your aws credentials in airflow connections with the label `aws_default`. 
 
 4. Run your dags on the airflow web service.
 
-5. Enter to Athena in AWS to see your data.
+5. Go to Athena in your AWS account to see your data.
+
+6. Start Querying!
 
 
 ## Future work

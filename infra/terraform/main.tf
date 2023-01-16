@@ -69,15 +69,15 @@ resource "aws_glue_catalog_database" "aws_glue_catalog_database" {
   name = "door2doordb2"
 }
 
-resource "aws_glue_connection" "aws_glue_conn" {
-  name = "door2door_conn2"
-  connection_type = "NETWORK"
-  physical_connection_requirements {
-    availability_zone      = var.availability_zone
-    security_group_id_list = [var.security_group_id]
-    subnet_id              = var.subnet_id
-  }
-}
+# resource "aws_glue_connection" "aws_glue_conn" {
+#   name = "door2door_conn2"
+#   connection_type = "NETWORK"
+#   physical_connection_requirements {
+#     availability_zone      = var.availability_zone
+#     security_group_id_list = [var.security_group_id]
+#     subnet_id              = var.subnet_id
+#   }
+# }
 
 # IAM resources
 # role for glue actions

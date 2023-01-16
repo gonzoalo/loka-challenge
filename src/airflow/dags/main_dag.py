@@ -2,104 +2,15 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.amazon.aws.operators.glue import GlueJobOperator
 from airflow.providers.amazon.aws.operators.glue_crawler import GlueCrawlerOperator
-from airflow.hooks.S3_hook import S3Hook
 from airflow.utils.dates import days_ago
-
-import botocore
-import re
-from datetime import datetime, timedelta
-import os
-
-
-MAIN_SOURCE_BUCKET = os.getenv('MAIN_SOURCE_BUCKET')
-DATA_FOLDER = os.getenv('DATA_FOLDER')
-DATALAKE_BUCKET = os.getenv('DATALAKE_BUCKET')
-RAW_ZONE_FOLDER = os.getenv('RAW_ZONE_FOLDER')
-STRUCTURE_ZONE_FOLDER = os.getenv('STRUCTURE_ZONE_FOLDER')
-GLUE_JOBS_FOLDER = os.getenv('GLUE_JOBS_FOLDER')
-AWS_DEFAULT_CONN = os.getenv('AWS_DEFAULT_CONN')
-
-GLUE_CRAWLER_NAME = os.getenv('GLUE_CRAWLER_NAME')
-GLUE_ROLE = os.getenv('GLUE_ROLE')
-GLUE_DATABASE_NAME = os.getenv('GLUE_DATABASE_NAME')
-
-GLUE_CRAWLER_VEHICLE_CONFIG = {
-    'Name': GLUE_CRAWLER_NAME.format("vehicle"),
-    'Role': GLUE_ROLE,
-    'DatabaseName': GLUE_DATABASE_NAME,
-    'Targets': {
-        'S3Targets': [
-            {
-                'Path': f'{DATALAKE_BUCKET}/{STRUCTURE_ZONE_FOLDER}vehicle_table',
-            }
-        ]
-    },
-}
-
-GLUE_CRAWLER_OP_CONFIG = {
-    'Name': GLUE_CRAWLER_NAME.format("operating_period"),
-    'Role': GLUE_ROLE,
-    'DatabaseName': GLUE_DATABASE_NAME,
-    'Targets': {
-        'S3Targets': [
-            {
-                'Path': f'{DATALAKE_BUCKET}/{STRUCTURE_ZONE_FOLDER}operating_period_table',
-            }
-        ]
-    },
-}
-
-
-def _fetch_data(ti, **kwargs):
-    """
-    Fetch data daily from the bucket s3://de-tech-assessment-2022/ to the 
-    new bucket s3://de-tech-assessment-2022-gonzalo/ there are a folder called raw_zone 
-    for the raw data which is the data at is original state before transfromations.
-    2019-06-01-15-29-5-events.json
-
-    Args:
-    - ti:
-    - kwargs:
-    """
-
-    datetime_format = "%Y-%m-%d"
-    date_tag = datetime.now().strftime(datetime_format)
-    test_tag = "2019-06-01"
-
-    s3_hook = S3Hook(aws_conn_id=AWS_DEFAULT_CONN)
-    s3_hook.get_conn()
-
-    prefix = f"{DATA_FOLDER}{test_tag}"
-    data_objects = s3_hook.list_keys(bucket_name=MAIN_SOURCE_BUCKET, prefix=prefix)
-
-    for data_object in data_objects:
-        object_key = re.sub(DATA_FOLDER, '', data_object)
-        if re.findall('.json', object_key):
-            source_bucket_key = f"s3://{MAIN_SOURCE_BUCKET}/{DATA_FOLDER}{object_key}"
-            dest_bucket_key = f"s3://{DATALAKE_BUCKET}/{RAW_ZONE_FOLDER}{object_key}"
-
-            try:
-                response = s3_hook.copy_object( 
-                    source_bucket_key=source_bucket_key,
-                    dest_bucket_key=dest_bucket_key
-                )
-
-                if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-                    pass
-                else:
-                    print(f"The file {object_key} was not properly copied.")
-                
-            except botocore.exceptions.ClientError as error:
-                raise error
-            
-            except botocore.exceptions.ParamValidationError as error:
-                raise ValueError('The parameters you provided are incorrect: {}'.format(error))
+from datetime import timedelta
+from utils import _fetch_data
+from config import *
 
 default_args = {
     'retry': 5,
     'retry_delay': timedelta(minutes=5)
 }
-
 
 with DAG(dag_id='door2door_dag', default_args=default_args, schedule_interval="@daily", 
     start_date=days_ago(1)) as dag:
@@ -113,16 +24,17 @@ with DAG(dag_id='door2door_dag', default_args=default_args, schedule_interval="@
     process_data_glue_job = GlueJobOperator(
         task_id='process_data_glue_job',
         job_name=job_name,
+        script_args=GLUE_JOB_ARGS,
         wait_for_completion=True,
-        script_location=f's3://{DATALAKE_BUCKET}/{GLUE_JOBS_FOLDER}/process_data.py',
+        script_location=f's3://{DATALAKE_BUCKET}/{GLUE_JOBS_FOLDER}process_data.py',
         s3_bucket=DATALAKE_BUCKET,
-        iam_role_name=GLUE_ROLE.split('/')[-1],
+        iam_role_name=GLUE_ROLE,
         create_job_kwargs={'GlueVersion': '3.0', 'NumberOfWorkers': 2, 'WorkerType': 'G.1X'},
     )
 
     crawl_s3_vehicles = GlueCrawlerOperator(
         task_id='crawl_s3_vehicles',
-        config=GLUE_CRAWLER_VEHICLE_CONFIG  ,
+        config=GLUE_CRAWLER_VEHICLE_CONFIG,
         wait_for_completion=False,
     )
 
