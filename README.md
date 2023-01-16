@@ -8,7 +8,7 @@ We are going to build a module that will be executed every day and feeds the dat
 
 We will be using the following architecture:
 
-![alt text](img/architecturefi.png)
+![alt text](img/architecture.png)
 
 ![alt text](img/dags.png)
 
