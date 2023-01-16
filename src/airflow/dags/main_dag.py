@@ -8,19 +8,20 @@ from airflow.utils.dates import days_ago
 import botocore
 import re
 from datetime import datetime, timedelta
+import os
 
-# send this to .env file
-MAIN_SOURCE_BUCKET = "de-tech-assessment-2022"
-DATA_FOLDER = "data/"
-DATALAKE_BUCKET = "de-tech-assessment-2022-gonzalo"
-RAW_ZONE_FOLDER = "raw_zone/"
-STRUCTURE_ZONE_FOLDER = "structure_zone/"
-GLUE_JOBS_FOLDER = "glue_jobs"
-AWS_DEFAULT_CONN = "aws_default"
 
-GLUE_CRAWLER_NAME="door2door_{}_crawler"
-GLUE_ROLE="arn:aws:iam::057286332506:role/AWSGlueServiceRole-door2door2"
-GLUE_DATABASE_NAME="door2doordb2"
+MAIN_SOURCE_BUCKET = os.getenv('MAIN_SOURCE_BUCKET')
+DATA_FOLDER = os.getenv('DATA_FOLDER')
+DATALAKE_BUCKET = os.getenv('DATALAKE_BUCKET')
+RAW_ZONE_FOLDER = os.getenv('RAW_ZONE_FOLDER')
+STRUCTURE_ZONE_FOLDER = os.getenv('STRUCTURE_ZONE_FOLDER')
+GLUE_JOBS_FOLDER = os.getenv('GLUE_JOBS_FOLDER')
+AWS_DEFAULT_CONN = os.getenv('AWS_DEFAULT_CONN')
+
+GLUE_CRAWLER_NAME = os.getenv('GLUE_CRAWLER_NAME')
+GLUE_ROLE = os.getenv('GLUE_ROLE')
+GLUE_DATABASE_NAME = os.getenv('GLUE_DATABASE_NAME')
 
 GLUE_CRAWLER_VEHICLE_CONFIG = {
     'Name': GLUE_CRAWLER_NAME.format("vehicle"),
