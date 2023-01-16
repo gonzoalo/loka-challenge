@@ -8,7 +8,14 @@ For the infrastructure cloud architecture we are going to use a Raw and Strucutr
 
 ![alt text](img/architecture.png)
 
-These services will be launched and setted with terraform an Infrastructure-as-code service which let us built everything we need to run the project.
+These services will be launched and setted with terraform an Infrastructure-as-code service which let us built everything we need to run the project. For the installation please refer the following [link](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli), otherwise you can launch the following services by yourself:
+- S3 bucket with:
+    - Raw Folder
+    - Structrure Folder
+    - Glue jobs Folder (with glue jobs inside)
+- IAM Role for the glue jobs
+- Glue Connection
+- Glue Database
 
 For the daily job execution we are going to use airflow as orchestrator with the following sequence of tasks:
 
