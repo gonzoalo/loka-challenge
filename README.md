@@ -45,7 +45,7 @@ We are only going to drop records when there's no data in event, timestamps or t
 
 ## Run the project
 
-First of all you have to set the configuration variables in `src/airflow/config.py` file
+First of all you have to set the configuration variables in `src/airflow/dags/config.py` file
 
 1. Create resources with terraform.
 
