@@ -9,22 +9,14 @@ from awsglue.context import GlueContext
 from awsglue.job import Job
 
 
-"""
-Here we need to do a data transformation and split the data in two tables 
-vehicles and operating period
-
-"""
-
 def cast_columns(df: DynamicFrame, cast_policies: dict) -> DynamicFrame:
     """
-    Cast Columns with respective formatted name and data type
-
+   Cast the columns for the dimensional model with the cast policies given as an argument.
     Args:
-    - df
-    - cast_policies
-
-    Return:
-    - df: result df
+        df (DataFrame): Dataframe of the table to be casted.
+        cast_policies (dict): Dictionary of the policies to cast the data in the table.
+    Returns:
+        df (DataFrame): Resulting dataframe after the cast columns transfromation
     """
 
     final_columns = []
@@ -44,23 +36,6 @@ def cast_columns(df: DynamicFrame, cast_policies: dict) -> DynamicFrame:
         final_columns.append(cast_policy['formatted_name'])
     
     return df.select(final_columns)
-
-# def null_treatment(df: DynamicFrame, nullTreatmentsPolicies: dict):
-#         """
-#         Treat the columns with null values given the null treatment policies givcen as an argument.
-#         Args:
-#             df (DataFrame): Dataframe of the table to be cleaned.
-#             nullTreatmentsPolicies (dict): Dictionary of the policies to treat the null data columns in the table.
-#         Returns:
-#             df (DataFrame): Resulting dataframe after the null treatment transfromation
-#         """
-#         for column, policy in nullTreatmentsPolicies.items():
-#             if policy['nullPolicy'] == 'drop':
-#                 df = df.where(~f.isnull(df[column]))
-#             elif policy['nullPolicy'] == 'replace':
-#                 df = df.withColumn(column, f.when(df[column] == '', f.lit(policy['replacement']))\
-#                     .otherwise(df[column]))
-#         return df
 
 args = getResolvedOptions(
     sys.argv,

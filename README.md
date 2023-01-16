@@ -2,6 +2,10 @@
 
 The following projects aims to process data daily from events from a Car Service Company and stores them in a Data Warehouse For this purpose we are going to use AWS as our cloud provider so in order to run the project we need an aws account. 
 
+## Aproach
+
+For this project I want to have a pipeline for future possible scenarios like modifying tables columns or adding new table to the data warehouse, etc. That's why the whole project have a main config file where we can set this up according to the business needs.
+
 ## Architecture
 
 For the infrastructure cloud architecture we are going to use a Raw and Strucutre zone. The first to copy the data from the original source and the second to store the data after the transformation job so we can still have a copy o the original data for any furutre use case. We are going to use Athena as a SQL-queriable data warehouse.
@@ -28,7 +32,7 @@ The data of the events are located in the bucket `s3://de-tech-assessment-2022/d
 
 ## Run the project
 
-First of all you have to set the env variables in `.env` file
+First of all you have to set the env variables in `src/airflow/config.py` file
 
 1. Create resources with terraform.
 
