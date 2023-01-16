@@ -1,8 +1,6 @@
-# Loka Challenge
+# Loka Challenge(door2door)
 
-the solution aims to process daily the data from the events in the car services 
-
-We are going to build a module that will be executed every day and feeds the data warehouse
+The following projects aims to process data daily from events from a Car Service Company and stores them in a Data Warehouse For this purpose we are going to use AWS as our cloud provider so in order to run the project we need an aws account. 
 
 ## Architecture
 
@@ -10,13 +8,15 @@ For the infrastructure cloud architecture we are going to use a Raw and Strucutr
 
 ![alt text](img/architecture.png)
 
+These services will be launched and setted with terraform an Infrastructure-as-code service which let us built everything we need to run the project.
+
 For the daily job execution we are going to use airflow as orchestrator with the following sequence of tasks:
 
 ![alt text](img/dags.png)
 
 ## Data
 
-The data of the even s are located in the bucket s3://de-tech-assessment-2022/data/
+The data of the even s are located in the bucket `s3://de-tech-assessment-2022/data/`
 
 
 ## Run the project
@@ -37,7 +37,7 @@ terraform apply
 
 `docker-compose up `
 
-Open on `localhost:8080/home`
+Open your project [here](0.0.0.0:8080/home)
 
 3. Set your aws credentials in airflow connections with the label `aws_default`. 
 
