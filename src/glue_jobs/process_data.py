@@ -7,6 +7,7 @@ from pyspark.sql import functions as f
 from pyspark.sql.types import StringType,BooleanType,DateType, DoubleType, LongType, IntegerType
 from awsglue.context import GlueContext
 from awsglue.job import Job
+import json
 
 
 def cast_columns(df: DynamicFrame, cast_policies: dict) -> DynamicFrame:
@@ -54,7 +55,7 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 
 raw_data = args['RAW_DATA']
-tables_to_transform = args['TABLES_TO_TRANSFORM']
+tables_to_transform = json.loads(args['TABLES_TO_TRANSFORM'])
 save_folder = args['SAVE_FOLDER']
 table_column_identifier = args['TABLE_COLUMN_IDENTIFIER']
 save_format = args['SAVE_FORMAT']

@@ -4,7 +4,7 @@ The following projects aims to process data daily from events from a Car Service
 
 ## Aproach
 
-For this project I want to have a pipeline for future possible scenarios like modifying tables columns or adding new table to the data warehouse, etc. That's why the whole project have a main config file where we can set this up according to the business needs.
+For this project I want to have a robust pipeline for future possible scenarios like modifying tables columns or adding new table to the data warehouse, etc. That's why the whole project have a main config file where we can set this up according to the business needs.
 
 ## Architecture
 
@@ -46,7 +46,10 @@ terraform apply
 
 2. Run airflow on your local or virtual machine.
 
-`docker-compose up `
+```
+cd src/airflow/
+docker-compose up 
+```
 
 Open your project [here](https://0.0.0.0:8080/home)
 
@@ -61,3 +64,5 @@ Open your project [here](https://0.0.0.0:8080/home)
 
 ## Future work
 
+- Depending on the size and quantity of the files in the source data bucket we can replace the `_fetch_data` module and make work through a cloud function like lambda and don't overcharge our worker node.
+- If the number of the entities(tables) increase, we can replace Amazon Athena and the glue jobs and use dbt and Redshift for the transformations in order to have a more detailed data warehouse.

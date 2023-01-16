@@ -10,7 +10,8 @@ GLUE_JOB_ARGS = {
     "RAW_DATA": f"s3://{DATALAKE_BUCKET}/{RAW_ZONE_FOLDER}",
     "SAVE_FOLDER": f"s3://{DATALAKE_BUCKET}/{STRUCTURE_ZONE_FOLDER}",
     "TABLE_COLUMN_IDENTIFIER": "on",
-    "TABLES_TO_TRANSFORM": [
+    "SAVE_FORMAT": "parquet",
+    "TABLES_TO_TRANSFORM": """[
         {
             "table_name": "vehicle",
             "cast_policies": {
@@ -47,8 +48,7 @@ GLUE_JOB_ARGS = {
                     "data_type": "StringType"
                 }
             },
-            "partition_parameter": "at",
-            "save_format": "parquet"
+            "partition_parameter": "at"
 
         },
         {
@@ -83,11 +83,10 @@ GLUE_JOB_ARGS = {
                     "data_type": "StringType"
                 }
             },
-            "partition_parameter": "at",
-            "save_format": "parquet"
+            "partition_parameter": "at"
 
         }
-    ]
+    ]"""
 }
 
 
